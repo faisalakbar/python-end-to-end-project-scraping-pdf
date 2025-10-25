@@ -1,0 +1,245 @@
+1704881014403	geckodriver	INFO	Listening on 127.0.0.1:51089
+1704881016510	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51090" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofile89T6yB"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704881017206	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704881017464	Marionette	INFO	Listening on port 51097
+WebDriver BiDi listening on ws://127.0.0.1:51090
+Read port: 51097
+1704881017664	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+DevTools listening on ws://127.0.0.1:51090/devtools/browser/b1806f78-9eb8-47a2-9a19-485bde32fce9
+1704881049664	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1704881075714	Marionette	INFO	Stopped listening on port 51097
+Dynamically enable window occlusion 1
+1704881134376	geckodriver	INFO	Listening on 127.0.0.1:51199
+1704881136451	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51200" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Windows\\TEMP\\rust_mozprofilebRCBz0"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704881137059	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704881137268	Marionette	INFO	Listening on port 51207
+WebDriver BiDi listening on ws://127.0.0.1:51200
+Read port: 51207
+1704881137469	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Fallback SW-WR + D3D11 to SW-WR
+[GFX1-]: Failed to initialize GPU process
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+DevTools listening on ws://127.0.0.1:51200/devtools/browser/3f2fcc98-0d67-4b0b-99c0-aa87d348129c
+1704881168659	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+console.error: (new Error("Polling for changes failed: NetworkError: Network request failed.", "resource://services-settings/remote-settings.sys.mjs", 324))
+1704881219410	geckodriver	INFO	Listening on 127.0.0.1:51227
+1704881221540	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51228" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofile7ezbhX"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704881222190	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704881222414	Marionette	INFO	Listening on port 51235
+WebDriver BiDi listening on ws://127.0.0.1:51228
+Read port: 51235
+1704881222610	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+DevTools listening on ws://127.0.0.1:51228/devtools/browser/74a970ea-6087-4197-be72-64b643a87e59
+1704881254401	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+console.error: (new Error("Polling for changes failed: NetworkError: Network request failed.", "resource://services-settings/remote-settings.sys.mjs", 324))
+1704881584463	Marionette	INFO	Stopped listening on port 51235
+Dynamically enable window occlusion 1
+1704881614786	geckodriver	INFO	Listening on 127.0.0.1:51275
+1704881616909	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51276" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofilegmvsLv"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704881617520	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704881617763	Marionette	INFO	Listening on port 51283
+WebDriver BiDi listening on ws://127.0.0.1:51276
+Read port: 51283
+1704881617995	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+DevTools listening on ws://127.0.0.1:51276/devtools/browser/626fd963-a150-49b3-8aad-c0592aeab12f
+1704881621802	Marionette	INFO	Stopped listening on port 51283
+Dynamically enable window occlusion 1
+1704882037906	geckodriver	INFO	Listening on 127.0.0.1:51457
+1704882040034	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51458" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofilen4aP74"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882040671	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882040919	Marionette	INFO	Listening on port 51465
+WebDriver BiDi listening on ws://127.0.0.1:51458
+Read port: 51465
+1704882041177	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+DevTools listening on ws://127.0.0.1:51458/devtools/browser/7c3f261d-e360-4d2e-a49f-cb3bc57c7c74
+Exiting due to channel error.
+1704882071020	geckodriver	INFO	Listening on 127.0.0.1:51479
+1704882073116	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51480" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofileULVOXd"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882073772	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882073995	Marionette	INFO	Listening on port 51487
+WebDriver BiDi listening on ws://127.0.0.1:51480
+Read port: 51487
+1704882074238	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+DevTools listening on ws://127.0.0.1:51480/devtools/browser/623f1b85-1600-44cf-8d20-b62ef9df7f6a
+[GFX1-]: CompositorBridgeChild receives [GFX1-]: CompositorBridgeCIhild receives IPC close with reaso[1704882122415	geckodriver	INFO	Listening on 127.0.0.1:51533
+1704882124519	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51534" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofileDmCGxK"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882125116	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882125336	Marionette	INFO	Listening on port 51541
+WebDriver BiDi listening on ws://127.0.0.1:51534
+Read port: 51541
+1704882125567	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+DevTools listening on ws://127.0.0.1:51534/devtools/browser/1035a999-166c-44fe-a13d-9ff288ab1a18
+1704882147762	Marionette	INFO	Stopped listening on port 51541
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1704882175297	geckodriver	INFO	Listening on 127.0.0.1:51611
+1704882177386	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51612" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofilenKjmpj"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882178004	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882178234	Marionette	INFO	Listening on port 51619
+WebDriver BiDi listening on ws://127.0.0.1:51612
+Read port: 51619
+1704882178455	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+DevTools listening on ws://127.0.0.1:51612/devtools/browser/84de890f-56d1-4b90-8cd3-a697ce3fb1b4
+1704882197366	Marionette	INFO	Stopped listening on port 51619
+Dynamically enable window occlusion 1
+1704882208174	geckodriver	INFO	Listening on 127.0.0.1:51687
+1704882210283	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51688" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofile9UsfHF"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882210937	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882211156	Marionette	INFO	Listening on port 51695
+WebDriver BiDi listening on ws://127.0.0.1:51688
+Read port: 51695
+1704882211340	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+DevTools listening on ws://127.0.0.1:51688/devtools/browser/63029768-7e89-4b0f-9f33-8c2611bad0a0
+1704882222930	Marionette	INFO	Stopped listening on port 51695
+Dynamically enable window occlusion 1
+1704882267351	geckodriver	INFO	Listening on 127.0.0.1:51709
+1704882269459	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51710" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofileO0Wvhr"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882270087	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882270319	Marionette	INFO	Listening on port 51717
+WebDriver BiDi listening on ws://127.0.0.1:51710
+Read port: 51717
+1704882270524	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+DevTools listening on ws://127.0.0.1:51710/devtools/browser/8cef6c12-4671-4408-8d9d-faa81346e35a
+1704882292464	Marionette	INFO	Stopped listening on port 51717
+Dynamically enable window occlusion 1
+1704882327733	geckodriver	INFO	Listening on 127.0.0.1:51815
+1704882329847	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51816" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofileho80cC"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882330486	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882330713	Marionette	INFO	Listening on port 51823
+WebDriver BiDi listening on ws://127.0.0.1:51816
+Read port: 51823
+1704882330933	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+DevTools listening on ws://127.0.0.1:51816/devtools/browser/f7a0a771-9e62-4fbc-9138-4ad2a12fae8e
+console.error: ({})
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://dashboard.dana.id."
+JavaScript error: https://dashboard.dana.id/app/scripts/main.688351d9f7729f2b8823.js, line 1: ChunkLoadError: Loading chunk 3 failed.
+(error: https://dashboard.dana.id/app/scripts/3.0e5eb905f64fcda5d781.js)
+console.error: ({})
+Exiting due to channel error.
+1704882348813	geckodriver	INFO	Listening on 127.0.0.1:51888
+1704882350908	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51889" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofileRId5jH"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882351530	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882351771	Marionette	INFO	Listening on port 51896
+WebDriver BiDi listening on ws://127.0.0.1:51889
+Read port: 51896
+1704882351969	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+DevTools listening on ws://127.0.0.1:51889/devtools/browser/5ecc1ee6-6774-495d-b93d-5801f49c3160
+1704882354069	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1704882382729	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+console.error: (new Error("Polling for changes failed: NetworkError: Network request failed.", "resource://services-settings/remote-settings.sys.mjs", 324))
+1704882415550	Marionette	INFO	Stopped listening on port 51896
+Dynamically enable window occlusion 1
+1704882424948	geckodriver	INFO	Listening on 127.0.0.1:51902
+1704882427043	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51903" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofileTn7y9U"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882427704	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882427923	Marionette	INFO	Listening on port 51910
+WebDriver BiDi listening on ws://127.0.0.1:51903
+Read port: 51910
+1704882428129	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+DevTools listening on ws://127.0.0.1:51903/devtools/browser/42f237b5-bfa2-4677-90fe-a7cff6fe7bea
+1704882430276	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1704882437857	Marionette	INFO	Stopped listening on port 51910
+Dynamically enable window occlusion 1
+1704882501542	geckodriver	INFO	Listening on 127.0.0.1:51915
+1704882503643	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "51916" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\2\\rust_mozprofileHqIcys"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1704882504284	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1704882504509	Marionette	INFO	Listening on port 51923
+WebDriver BiDi listening on ws://127.0.0.1:51916
+Read port: 51923
+1704882504704	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: Failed to get D3D11VideoDevice: 0x80004002
+[GFX1-]: Handling webrender error 5
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
+DevTools listening on ws://127.0.0.1:51916/devtools/browser/2cbb2768-ac6e-42b7-8683-bc2a7f2a2486
+1704882506840	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+Exiting due to channel error.
+Exiting due to channel error.

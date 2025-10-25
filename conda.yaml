@@ -1,0 +1,11 @@
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - tesseract                 # installs Tesseract binary (Windows supported via conda)
+  - pip:
+      - rpaframework[ocr]==28.6.2
+      - rpaframework-recognition==6.1.0
+      - requests
+      - beautifulsoup4
