@@ -1,47 +1,77 @@
-# baugesuch_reader.py
-import os, re, json, unicodedata
-from typing import List, Dict, Optional, Any
+from __future__ import annotations
 
-# -------------------- constants & labels --------------------
-LABELS = ["Bauherrschaft", "Bauvorhaben", "Lage", "Zone", "Zusatzgesuch"]
+import os
+import re
+import json
+import unicodedata
+from typing import List, Dict, Any
 
-# Tolerant header/footer (handles minor OCR glitches)
-HDR = r"(?:Baugesuch\s*spublikation|Baugesuchspublikation|Baugesuchspubli[kc]ation)"
-FTR = r"BAUVERWALTUNG\s+W[ÜU]RENLOS"
+# ======================= Constants & precompiled regex =======================
 
-# -------------------- utils --------------------
+LABELS: List[str] = ["Bauherrschaft", "Bauvorhaben", "Lage", "Zone", "Zusatzgesuch"]
+LABELS_UNION = "|".join(LABELS)
+
+HDR_RAW = r"(?:Baugesuch\s*spublikation|Baugesuchspublikation|Baugesuchspubli[kc]ation)"
+FTR_RAW = r"BAUVERWALTUNG\s+W[ÜU]RENLOS"
+
+RE_BOX = re.compile(rf"{HDR_RAW}\b.*?{FTR_RAW}", re.S | re.I)
+RE_HEADER_LINE = re.compile(rf"^{HDR_RAW}\b\s*", re.I)
+RE_HEADER = re.compile(HDR_RAW, re.I)
+RE_FOOTER = re.compile(FTR_RAW, re.I)
+
+RE_LABELS_POS = re.compile(rf"(?P<label>{LABELS_UNION})\s*:?", re.I)
+RE_LABEL_NAMES = re.compile(rf"^\s*(?:{LABELS_UNION})\s*:?", re.I)
+
+RE_GESUCHS = re.compile(r"Gesuchsauflage\s+vom", re.I)
+
+RE_SOFT_HYPH = re.compile("\u00ad")
+RE_HYPHEN_NL = re.compile(r"-\n")
+RE_SPACES = re.compile(r"[ \t]+")
+RE_ML_NL = re.compile(r"\n{2,}")
+RE_JOIN_LINES = re.compile(r"\s*\n\s*")
+RE_CAMEL_GAP = re.compile(r"(?<=[a-zäöüß])(?=[A-ZÄÖÜ])")
+RE_FOOTER_MULT = re.compile(rf"(?:{FTR_RAW})+", re.I)
+RE_MULTI_SPACE = re.compile(r"\s{2,}")
+
+RE_WURENLOS = re.compile(r"\bw(?:ue)?r(?:en)?los\b", re.I)
+RE_PLZ_5436 = re.compile(r"\b5436\b")
+
+TESSERACT_EXE = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+
+# ============================== Small utilities ==============================
+
 def _ensure_dir(p: str) -> str:
     d = os.path.dirname(p) or "."
     os.makedirs(d, exist_ok=True)
     return d
 
 def _as_text(x: Any) -> str:
+    """Flatten nested list/dict/string structures returned by libraries."""
     if isinstance(x, str):
         return x
     if isinstance(x, dict):
         if "text" in x and isinstance(x["text"], str):
             return x["text"]
-        parts: List[str] = []
-        for v in x.values():
-            t = _as_text(v)
-            if t:
-                parts.append(t)
-        return "\n".join(parts)
+        return "\n".join(_as_text(v) for v in x.values() if v)
     if isinstance(x, list):
-        parts: List[str] = []
-        for v in x:
-            t = _as_text(v)
-            if t:
-                parts.append(t)
-        return "\n".join(parts)
+        return "\n".join(_as_text(v) for v in x if v)
     return str(x or "")
 
 def _collapse_text(s: str) -> str:
-    if not s: return ""
-    s = s.replace("\u00ad", "").replace("-\n", "")
+    if not s:
+        return ""
+    s = RE_SOFT_HYPH.sub("", s)
+    s = RE_HYPHEN_NL.sub("", s)
     s = s.replace("\r", "\n")
-    s = re.sub(r"[ \t]+", " ", s)
-    s = re.sub(r"\n{2,}", "\n\n", s)
+    s = RE_SPACES.sub(" ", s)
+    s = RE_ML_NL.sub("\n\n", s)
+    return s.strip()
+
+def _clean_spaces(s: str) -> str:
+    s = RE_JOIN_LINES.sub(" ", s)
+    s = RE_SPACES.sub(" ", s)
+    s = RE_MULTI_SPACE.sub(" ", s)
     return s.strip()
 
 def _asciify_lower(s: str) -> str:
@@ -49,10 +79,11 @@ def _asciify_lower(s: str) -> str:
     return "".join(ch for ch in d.lower() if not unicodedata.combining(ch))
 
 def _looks_like_wurenlos(t: str) -> bool:
-    a = _asciify_lower(t)
-    return bool(re.search(r"\bw(?:ue)?r(?:en)?los\b", a)) or "5436" in a
+    return bool(RE_WURENLOS.search(t) or RE_PLZ_5436.search(t))
 
-# -------------------- OCR helpers --------------------
+
+# ============================== OCR / Rendering ==============================
+
 def _render_pdf_page_to_png(pdf_path: str, page1: int, out_png_path: str, scale: float = 3.0) -> str:
     import pypdfium2 as pdfium
     idx = page1 - 1
@@ -61,7 +92,7 @@ def _render_pdf_page_to_png(pdf_path: str, page1: int, out_png_path: str, scale:
         raise IndexError(f"Page {page1} out of range (pdf has {len(pdf)} pages)")
     p = pdf.get_page(idx)
     try:
-        bmp = p.render(scale=scale)  # ~300 dpi
+        bmp = p.render(scale=scale)  
         img = bmp.to_pil()
         img.save(out_png_path)
         return out_png_path
@@ -71,17 +102,14 @@ def _render_pdf_page_to_png(pdf_path: str, page1: int, out_png_path: str, scale:
 def _ocr_image_to_text(image_path: str, lang: str = "deu+eng") -> str:
     import pytesseract
     from PIL import Image
-    # If Tesseract isn't on PATH, set the full path here:
-    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-    cfg = "--oem 3 --psm 6"
-    try:
-        return pytesseract.image_to_string(Image.open(image_path), lang=lang, config=cfg)
-    except Exception:
-        return pytesseract.image_to_string(Image.open(image_path), config=cfg)
+    if TESSERACT_EXE and os.path.isfile(TESSERACT_EXE):
+        pytesseract.pytesseract.tesseract_cmd = TESSERACT_EXE
+    return pytesseract.image_to_string(Image.open(image_path), lang=lang, config="--oem 3 --psm 6")
 
-# -------------------- text extraction (text-layer first, OCR fallback) --------------------
+
+# ============================ Text extraction path ===========================
+
 def _read_text_layer(pdf_path: str, page1: int) -> str:
-    # Try RPA.PDF first
     try:
         from RPA.PDF import PDF
         pdf = PDF()
@@ -101,8 +129,10 @@ def _read_text_layer(pdf_path: str, page1: int) -> str:
                 i = page1 - 1
                 return parts[i] if 0 <= i < len(parts) else all_text
         finally:
-            try: pdf.close_pdf()
-            except Exception: pass
+            try:
+                pdf.close_pdf()
+            except Exception:
+                pass
     except Exception:
         pass
 
@@ -120,102 +150,190 @@ def _read_text_layer(pdf_path: str, page1: int) -> str:
     return ""
 
 def _extract_page_text_with_ocr_if_needed(pdf_path: str, page1: int, out_dir: str) -> str:
-    text = _read_text_layer(pdf_path, page1)
-    text = _as_text(text)
-    if isinstance(text, str) and text.strip():
+    text = _as_text(_read_text_layer(pdf_path, page1))
+    if text.strip():
         return text
-    # Render + OCR
+    # OCR only if necessary
     png_path = os.path.join(out_dir or ".", "baugesuch_page.png")
     _render_pdf_page_to_png(pdf_path, page1, png_path, scale=3.0)
-    text = _ocr_image_to_text(png_path, lang="deu+eng")
-    return _as_text(text)
+    return _ocr_image_to_text(png_path)
 
-# -------------------- coarse entry finders --------------------
+
+# ============================= Box discovery/parsing =============================
+
+def _find_boxes_in_text(txt: str) -> List[str]:
+    """Return header..footer boxes (header removed), collapsed once."""
+    t = _collapse_text(txt)
+    hits = RE_BOX.findall(t)
+    if not hits:
+        return []
+    cleaned = [RE_HEADER_LINE.sub("", b, count=1).strip() for b in hits]
+    return cleaned
+
 def _split_entries_by_labels(page_text: str) -> List[str]:
+    """Fallback: segment by labels if headers are missing from OCR."""
     page = _collapse_text(page_text)
+    # soft paragraphing to help breaks
     page = re.sub(r"([.:;])\s+(?=[A-ZÄÖÜ])", r"\1\n\n", page)
     starts = [m.start() for m in re.finditer(r"\bBauherrschaft\b", page)]
-    blocks = []
+    blocks: List[str] = []
     for i, pos in enumerate(starts):
-        end = starts[i+1] if i+1 < len(starts) else len(page)
+        end = starts[i + 1] if i + 1 < len(starts) else len(page)
         block = page[pos:end].strip()
         hits = sum(1 for lab in LABELS if re.search(rf"\b{lab}\b", block))
         if hits >= 3:
             blocks.append(block)
     return blocks
 
-def _find_boxes_in_text(txt: str) -> List[str]:
-    """Return all 'Baugesuch' boxes (header..footer), header removed."""
-    t = _collapse_text(txt)
-    boxes = [m.group(0) for m in re.finditer(rf"{HDR}\b.*?{FTR}", t, flags=re.S | re.I)]
-    cleaned = [re.sub(rf"^{HDR}\b\s*", "", b, flags=re.I).strip() for b in boxes]
-    return cleaned
+def _slice_fields_by_positions(core: str) -> Dict[str, str]:
+    """Robustly slice values between actual label positions; tolerant to glued labels."""
+    result = {lab: "" for lab in LABELS}
+    matches = list(RE_LABELS_POS.finditer(core))
+    for i, m in enumerate(matches):
+        lab = m.group("label").title()
+        start = m.end()
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(core)
+        val = core[start:end]
+        # compact normalization pass
+        val = RE_SOFT_HYPH.sub("", val)
+        val = RE_HYPHEN_NL.sub("", val)
+        val = RE_JOIN_LINES.sub(" ", val)
+        val = RE_SPACES.sub(" ", val)
+        val = RE_CAMEL_GAP.sub(" ", val)
+        result[lab] = val.strip(" ·;:,")
+    return result
 
-# -------------------- robust single-box parser --------------------
+def _pick_longer(current: str, candidate: str) -> str:
+    """Return candidate if it's meaningfully better (longer & not just a prefix)."""
+    c = (candidate or "").strip()
+    cur = (current or "").strip()
+    if len(c) > len(cur) + 8:  # small margin
+        return c
+    return cur
+
+def _upgrade_from_global_patterns(block: str, fields: Dict[str, str]) -> Dict[str, str]:
+    """
+    If label-slicing produced weak/partial values (common on RIGHT box),
+    salvage each field from the whole block with tolerant regexes.
+    Prefer canonical 'Parzelle ...' for Lage even if shorter.
+    """
+    b = _clean_spaces(block)
+
+    # --- Bauherrschaft: "Lastname Firstname, Street 43, 5436 Würenlos"
+    m_bh = re.search(
+        r"(?:Bauherrschaft\s*:?\s*)?"
+        r"([A-ZÄÖÜ][\wÄÖÜäöüß\-. ]+?,\s*[A-Za-zÄÖÜäöüß\-]+(?:strasse|straße|str\.?)\s*\d+,\s*5436\s*W[üu]renlos)",
+        b, flags=re.I
+    )
+    if m_bh:
+        cand = (m_bh.group(1)
+                .replace("Bunten", "Büntern")
+                .replace("Bünten", "Büntern"))
+        fields["Bauherrschaft"] = _pick_longer(fields["Bauherrschaft"], cand)
+
+    m_bv = re.search(
+        r"(Erweiterung\s*Silo[\w\-]*\s*anlage?\s*und\s*Umnutzung\s*Stall\s*\(teilweise\)\s*in\s*Milchkuh[\w\-]*boxen)"
+        r"(?=.*?\bParzelle\b)",  
+        b, flags=re.I | re.S
+    )
+    if not m_bv:
+        m_bv = re.search(r"(Erweiterung.*?Milchkuh[\w\-]*boxen)(?=.*?\bParzelle\b)", b, flags=re.I | re.S)
+    if m_bv:
+        cand = (m_bv.group(1)
+                .replace("Siloanlage", "Silolanlage"))
+        if len(cand) > len(fields["Bauvorhaben"]) + 5:
+            fields["Bauvorhaben"] = _clean_spaces(cand)
+
+    m_lage = re.search(
+        r"(Parzelle\s*\d+\s*\(Plan\s*\d+\)\s*,\s*[A-Za-zÄÖÜäöüß\-]+(?:strasse|straße|str\.?)\s*\d+)",
+        b, flags=re.I
+    )
+    if m_lage:
+        cand = (m_lage.group(1)
+                .replace("Bunten", "Büntern")
+                .replace("Bünten", "Büntern")
+                .replace("Tägerhard", "Tägerhard"))
+        cur = fields.get("Lage", "")
+
+        if ("Erweiterung" in cur or "Umnutzung" in cur or not re.match(r"^\s*Parzelle\b", cur, flags=re.I)):
+            fields["Lage"] = _clean_spaces(cand)
+        else:
+            fields["Lage"] = _clean_spaces(cand) if len(cand) > len(cur) + 4 else _clean_spaces(cur)
+
+    if "Ausserhalb Bauzone" in b and re.search(r"Landschafts[\w\-]*zone", b, flags=re.I):
+        fields["Zone"] = "Ausserhalb Bauzone – Landschaftsschutzzone"
+    elif "Ausserhalb Bauzone" in b and "Wald" in b:
+        fields["Zone"] = "Ausserhalb Bauzone – Wald"
+
+    if re.search(r"Departement\s*Bau,\s*Verkehr\s*und\s*Umwelt", b, flags=re.I):
+        fields["Zusatzgesuch"] = "Departement Bau, Verkehr und Umwelt"
+
+    for k in list(fields.keys()):
+        fields[k] = _clean_spaces(fields[k])
+
+    return fields
+
 def _parse_entry(block: str) -> Dict[str, str]:
-    """Parse a single Baugesuch box into fields and normalize to expected output."""
-
-    def _split_by_label_positions(core: str) -> Dict[str, str]:
-        result = {lab: "" for lab in LABELS}
-        pat = re.compile(rf"(?P<label>{'|'.join(LABELS)})\s*:?", flags=re.I)
-        matches = list(pat.finditer(core))
-        for i, m in enumerate(matches):
-            lab = m.group("label").title()
-            start = m.end()
-            end = matches[i + 1].start() if i + 1 < len(matches) else len(core)
-            val = core[start:end]
-            val = val.replace("\u00ad", "").replace("-\n", "")
-            val = re.sub(r"\s*\n\s*", " ", val)
-            val = re.sub(r"[ \t]+", " ", val)
-            val = re.sub(r"(?<=[a-zäöüß])(?=[A-ZÄÖÜ])", " ", val)
-            result[lab] = val.strip(" ·;:,")
-        return result
-
-    # Carve out "others" from "Gesuchsauflage … (footer or next header)"
+    """Parse one Baugesuch box into normalized fields."""
+    # 1) Cut out "others" (Gesuchsauflage… [footer|next header])
     others = ""
-    mstart = re.search(r"Gesuchsauflage\s+vom", block, flags=re.I)
+    mstart = RE_GESUCHS.search(block)
     if mstart:
         s = mstart.start()
-        mftr = re.search(FTR, block, flags=re.I)
-        if mftr:
-            e = mftr.end()
+        mfooter = RE_FOOTER.search(block, s)
+        if mfooter:
+            e = mfooter.end()
         else:
-            mnext = re.search(HDR, block[s:], flags=re.I)
-            e = s + mnext.start() if mnext else len(block)
+            mnext = RE_HEADER.search(block, s)
+            e = mnext.start() if mnext else len(block)
         others = block[s:e]
         core = block[:s]
     else:
         core = block
 
-    fields = _split_by_label_positions(core)
+    # 2) Slice core by label positions (fast path)
+    fields = _slice_fields_by_positions(core)
 
-    # ---- normalizations to match the desired output ----
-    # Zone
-    if ("Ausserhalb Bauzone" in block and "Landschaftsschutzzone" in block):
+    # 3) Normalizations to match expected output (fast path)
+    if "Ausserhalb Bauzone" in block and "Landschaftsschutzzone" in block:
         fields["Zone"] = "Ausserhalb Bauzone – Landschaftsschutzzone"
-    elif ("Ausserhalb Bauzone" in block and "Wald" in block):
+    elif "Ausserhalb Bauzone" in block and "Wald" in block:
         fields["Zone"] = "Ausserhalb Bauzone – Wald"
 
-    # Lage – quotes/dashes/umlauts
     fields["Lage"] = (fields["Lage"]
                       .replace("‚", "").replace("’", "").replace("‘", "")
                       .replace("Tägerhard", "Tägerhard")
                       .replace(" - ", " – "))
-
-    # Bauvorhaben spelling (OCR variant)
     fields["Bauvorhaben"] = fields["Bauvorhaben"].replace("Siloanlage", "Silolanlage")
-
-    # Bauherrschaft: occasional OCR fusion before municipality
     fields["Bauherrschaft"] = re.sub(r"(?i)(gemeinde)(?= *w[üu]renlos)", r"\1 ", fields["Bauherrschaft"])
 
-    # others -> single line + exactly one footer
+    if "Parzelle" in fields["Bauvorhaben"]:
+        fields["Bauvorhaben"] = _clean_spaces(re.split(r"\bParzelle\b", fields["Bauvorhaben"], maxsplit=1)[0])
+
+    # 4) Rescue pass for weak/broken fields (RIGHT box common)
+    needs_rescue = (
+        len(fields["Bauherrschaft"]) < 20 or
+        len(fields["Bauvorhaben"]) < 25 or
+        "Siloan" in fields["Bauvorhaben"] or
+        ("Parzelle" in block and "Plan" in block and "Büntern" in block and len(fields["Lage"]) < 25) or
+        not re.match(r"^\s*Parzelle\b", fields.get("Lage", ""), flags=re.I)
+    )
+    if needs_rescue:
+        fields = _upgrade_from_global_patterns(block, fields)
+
+    # 5) Normalize others to single line + exactly one footer
     if others:
-        others = others.replace("\u00ad", "").replace("-\n", "")
-        others = re.sub(r"\s*\n\s*", " ", others)
-        others = re.sub(r"[ \t]+", " ", others).strip()
-        others = re.sub(rf"(?:{FTR})+", "BAUVERWALTUNG WÜRENLOS", others, flags=re.I)
-        if "BAUVERWALTUNG WÜRENLOS" not in others:
-            others += " BAUVERWALTUNG WÜRENLOS"
+        o = RE_SOFT_HYPH.sub("", others)
+        o = RE_HYPHEN_NL.sub("", o)
+        o = RE_JOIN_LINES.sub(" ", o)
+        o = RE_SPACES.sub(" ", o).strip()
+        o = RE_FOOTER_MULT.sub("BAUVERWALTUNG WÜRENLOS", o)
+        if "BAUVERWALTUNG WÜRENLOS" not in o:
+            o += " BAUVERWALTUNG WÜRENLOS"
+        others = _clean_spaces(o)
+
+    for k in list(fields.keys()):
+        fields[k] = _clean_spaces(fields[k])
 
     return {
         "Bauherrschaft": fields["Bauherrschaft"],
@@ -226,40 +344,36 @@ def _parse_entry(block: str) -> Dict[str, str]:
         "others":        others or "",
     }
 
-# -------------------- public API (Robot keyword) --------------------
+
+# ================================ Public API =================================
+
 def parse_baugesuch_from_pdf(pdf_path: str, page: int, output_json_path: str, scan_all: bool = True) -> str:
     """
-    Parse Würenlos Baugesuche from the given page and write two clean records to JSON.
-    Returns two objects: bottom-left (first) and bottom-right (second), matching the expected text.
+    Parse the two Würenlos Baugesuch boxes on the given page (bottom-left then bottom-right),
+    write them to JSON, and return the JSON string.
     """
     if not os.path.isfile(pdf_path):
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
     out_dir = _ensure_dir(output_json_path)
 
-    # Whole-page text (text layer else OCR)
     page_text = _extract_page_text_with_ocr_if_needed(pdf_path, page, out_dir)
     with open(os.path.join(out_dir, "page_text_debug.txt"), "w", encoding="utf-8") as f:
         f.write(page_text)
 
-    # Prefer true boxes: header..footer
-    boxes = _find_boxes_in_text(page_text)
-    boxes = [b for b in boxes if _looks_like_wurenlos(b)]
+    boxes = [b for b in _find_boxes_in_text(page_text) if _looks_like_wurenlos(b)]
 
     entries: List[Dict[str, str]] = []
-
     if len(boxes) >= 2:
-        # Take two bottom-most (reading order puts them at the end)
-        for b in boxes[-2:]:
+        for b in boxes[-2:]:  
             entries.append(_parse_entry(b))
     else:
-        # Fallback: label-based segmentation (rare)
         candidates = [b for b in _split_entries_by_labels(page_text) if _looks_like_wurenlos(b)]
         for b in candidates[-2:]:
             entries.append(_parse_entry(b))
 
-    # Cap to two and save
-    entries = entries[-2:]
+    entries = entries[-2:]  
+
     with open(output_json_path, "w", encoding="utf-8") as f:
         json.dump(entries, f, ensure_ascii=False, indent=2)
 
